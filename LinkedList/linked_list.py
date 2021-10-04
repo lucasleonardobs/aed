@@ -23,32 +23,28 @@ class LinkedList:
 
         return result
 
-    def __getitem__(self, index: int) -> Node:
+    def _getnode(self, index: int) -> Node:
         i = 0
         pointer = self.head
 
         while pointer:
             if i == index:
-                return pointer.value
+                return pointer
 
             pointer = pointer.next
             i += 1
 
         raise IndexError("Index out of range")
 
-    def __setitem__(self, index: int, value: int) -> None:
-        i = 0
-        pointer = self.head
+    def __getitem__(self, index: int) -> int:
+        return self._getnode(index).value
 
+    def __setitem__(self, index: int, value: int) -> None:
         if index > self._size:
             raise IndexError("Index out of range")
 
-        while pointer:
-            if i == index:
-                pointer.value = value
-
-            pointer = pointer.next
-            i += 1
+        pointer = self._getnode(index)
+        pointer.value = value
 
     def push(self, value: int) -> None:
         if self.head:
@@ -58,12 +54,45 @@ class LinkedList:
             node = Node(value)
             self.head = node
             self.top = node
+
         self._size += 1
 
-    def pop(self) -> Node:
-        pass
+    def insert(self, index: int, value: int) -> None:
+        node = Node(value)
 
-    def index(self, value) -> int:
+        if index == 0:
+            node.next = self.head
+            self.head = node
+        else:
+            pointer = self._getnode(index - 1)
+            node.next = pointer.next
+            pointer.next = node
+
+        self._size += 1
+
+    def remove(self, value) -> None:
+        if self.head and self.head.value == value:
+            self.head = self.head.next
+            self._size -= 1
+            return True
+        else:
+            ancestor = self.head
+            pointer = self.head.next
+
+            while pointer:
+                if pointer.value == value:
+                    ancestor.next = pointer.next
+                    pointer.next = None
+                    self._size -= 1
+
+                    return True
+
+                ancestor = pointer
+                pointer = pointer.next
+
+        raise ValueError(f"{value} is not in list")
+
+    def index(self, value: int) -> int:
         i = 0
         pointer = self.head
 
