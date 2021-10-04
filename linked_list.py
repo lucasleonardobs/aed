@@ -20,6 +20,9 @@ class LinkedList:
 
         return result
 
+    def __str__(self) -> str:
+        return self.__repr__()
+
     def _getnode(self, index: int) -> Node:
         i = 0
         pointer = self.head
